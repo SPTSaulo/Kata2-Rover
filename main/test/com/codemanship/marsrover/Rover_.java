@@ -1,131 +1,79 @@
 package com.codemanship.marsrover;
 
 import org.junit.Test;
+import refactoring.Rover;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static refactoring.Rover.Heading.*;
+import static refactoring.Rover.Order.*;
 
 public class Rover_ {
-
     @Test
-    public void turnRightNtoE(){
-        Rover rover = new Rover("N", 5, 5);
-        rover.go("R");
-        assertEquals("E", rover.getFacing());
-        assertEquals(5, rover.getPosition()[0]);
-        assertEquals(5, rover.getPosition()[1]);
+    public void should_be_initialized_with_facing_as_string() {
+        assertThat(new Rover("N", 5, 5).heading()).isEqualTo(North);
+        assertThat(new Rover("North", 5, 5).heading()).isEqualTo(North);
+        assertThat(new Rover("North", 5, 5).position()).isEqualTo(new Rover.Position(5, 5));
     }
 
     @Test
-    public void turnRightEtoS(){
-        Rover rover = new Rover("E", 5, 5);
-        rover.go("R");
-        assertEquals("S", rover.getFacing());
+    public void should_be_initialized() {
+        assertThat(new Rover(North, new Rover.Position(5, 5)).position()).isEqualTo(new Rover.Position(5, 5));
+        assertThat(new Rover(North, 5, 5).position()).isEqualTo(new Rover.Position(5, 5));
     }
 
     @Test
-    public void turnRightStoW(){
-        Rover rover = new Rover("S", 5, 5);
-        rover.go("R");
-        assertEquals("W", rover.getFacing());
+    public void should_turn_right() {
+        Rover rover = new Rover(North, new Rover.Position(4, 4));
+        rover.go(Right);
+        assertThat(rover.heading()).isEqualTo(East);
+        assertThat(rover.position()).isEqualTo(new Rover.Position(4, 4));
     }
 
     @Test
-    public void turnRightWtoN(){
-        Rover rover = new Rover("W", 5, 5);
-        rover.go("R");
-        assertEquals("N", rover.getFacing());
+    public void should_turn_left() {
+        Rover rover = new Rover(North, new Rover.Position(4, 4));
+        rover.go(Left);
+        assertThat(rover.heading()).isEqualTo(West);
+        assertThat(rover.position()).isEqualTo(new Rover.Position(4, 4));
     }
 
     @Test
-    public void turnLeftNtoW(){
-        Rover rover = new Rover("N", 5, 5);
-        rover.go("L");
-        assertEquals("W", rover.getFacing());
+    public void should_go_forward() {
+        Rover rover = new Rover(North, new Rover.Position(4, 4));
+        rover.go(Forward);
+        assertThat(rover.heading()).isEqualTo(North);
+        assertThat(rover.position()).isEqualTo(new Rover.Position(4, 5));
     }
 
     @Test
-    public void turnLeftWtoS(){
-        Rover rover = new Rover("W", 5, 5);
-        rover.go("L");
-        assertEquals("S", rover.getFacing());
+    public void should_go_backward() {
+        Rover rover = new Rover(North, new Rover.Position(4, 4));
+        rover.go(Backward);
+        assertThat(rover.heading()).isEqualTo(North);
+        assertThat(rover.position()).isEqualTo(new Rover.Position(4, 3));
     }
 
     @Test
-    public void turnLeftStoE(){
-        Rover rover = new Rover("S", 5, 5);
-        rover.go("L");
-        assertEquals("E", rover.getFacing());
+    public void should_execute_many_orders() {
+        Rover rover = new Rover(North, new Rover.Position(4, 4));
+        rover.go(Backward, Right, Forward, Left);
+        assertThat(rover.heading()).isEqualTo(North);
+        assertThat(rover.position()).isEqualTo(new Rover.Position(5, 3));
     }
 
     @Test
-    public void turnLeftEtoN(){
-        Rover rover = new Rover("E", 5, 5);
-        rover.go("L");
-        assertEquals("N", rover.getFacing());
+    public void should_execute_many_orders_as_string() {
+        Rover rover = new Rover(North, new Rover.Position(4, 4));
+        rover.go("BRFL");
+        assertThat(rover.heading()).isEqualTo(North);
+        assertThat(rover.position()).isEqualTo(new Rover.Position(5, 3));
     }
 
     @Test
-    public void moveFowardFacingN(){
-        Rover rover = new Rover("N", 5, 5);
-        rover.go("F");
-        assertArrayEquals(new int[]{5, 6}, rover.getPosition());
-    }
-
-    @Test
-    public void moveFowardFacingE(){
-        Rover rover = new Rover("E", 5, 5);
-        rover.go("F");
-        assertArrayEquals(new int[]{6, 5}, rover.getPosition());
-    }
-
-    @Test
-    public void moveFowardFacingS(){
-        Rover rover = new Rover("S", 5, 5);
-        rover.go("F");
-        assertArrayEquals(new int[]{5, 4}, rover.getPosition());
-    }
-
-    @Test
-    public void moveFowardFacingW(){
-        Rover rover = new Rover("W", 5, 5);
-        rover.go("F");
-        assertArrayEquals(new int[]{4, 5}, rover.getPosition());
-    }
-
-    @Test
-    public void moveBackFacingN(){
-        Rover rover = new Rover("N", 5, 5);
-        rover.go("B");
-        assertArrayEquals(new int[]{5, 4}, rover.getPosition());
-    }
-
-    @Test
-    public void moveBackFacingE(){
-        Rover rover = new Rover("E", 5, 5);
-        rover.go("B");
-        assertArrayEquals(new int[]{4, 5}, rover.getPosition());
-    }
-
-    @Test
-    public void moveBackFacingS(){
-        Rover rover = new Rover("S", 5, 5);
-        rover.go("B");
-        assertArrayEquals(new int[]{5, 6}, rover.getPosition());
-    }
-
-    @Test
-    public void moveBackFacingW(){
-        Rover rover = new Rover("W", 5, 5);
-        rover.go("B");
-        assertArrayEquals(new int[]{6, 5}, rover.getPosition());
-    }
-
-    @Test
-    public void executesSequenceOfInstructions(){
-        Rover rover = new Rover("N", 5, 5);
-        rover.go("RFF");
-        assertEquals("E", rover.getFacing());
-        assertArrayEquals(new int[]{7, 5}, rover.getPosition());
+    public void should_execute_many_orders_as_string_with_error() {
+        Rover rover = new Rover(North, new Rover.Position(4, 4));
+        rover.go("BR*FL");
+        assertThat(rover.heading()).isEqualTo(North);
+        assertThat(rover.position()).isEqualTo(new Rover.Position(5, 3));
     }
 }
