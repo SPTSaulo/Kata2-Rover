@@ -4,8 +4,8 @@ import static refactoring.SimpleViewPoint.Heading.*;
 
 public class SimpleViewPoint implements ViewPoint{
 
-    private Heading heading;
-    private Position position;
+    private static Heading heading;
+    private static Position position;
 
     public SimpleViewPoint(String facing, int x, int y) {
         this(Heading.of(facing), x, y);
